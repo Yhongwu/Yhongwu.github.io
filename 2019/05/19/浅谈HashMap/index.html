@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="java基础,java,扩容,HashMap,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="版本jdk1.7.0_06 引入​      HashMap是java中常用的集合类之一，几乎每个程序员都知道它，也会在不经意间使用到它。HashMap常会被用来与Hashtable和ConcurrentHashMap作比较。在弄清它们的区别前，首先应该了解下各个类底层究竟是怎么实现的。本文就来谈谈HashMap的实现原理。 ​     HashMap在jdk1.7和jdk1.8的实现上有较大的不">
+<meta name="keywords" content="java基础,java,扩容,HashMap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈HashMap">
+<meta property="og:url" content="http://yoursite.com/2019/05/19/浅谈HashMap/index.html">
+<meta property="og:site_name" content="howard Yao">
+<meta property="og:description" content="版本jdk1.7.0_06 引入​      HashMap是java中常用的集合类之一，几乎每个程序员都知道它，也会在不经意间使用到它。HashMap常会被用来与Hashtable和ConcurrentHashMap作比较。在弄清它们的区别前，首先应该了解下各个类底层究竟是怎么实现的。本文就来谈谈HashMap的实现原理。 ​     HashMap在jdk1.7和jdk1.8的实现上有较大的不">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/001.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/002.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/003.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/004.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/005.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/006.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/007.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/008.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/009.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/010.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/011.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/012.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/013.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/014.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/015.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/016.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/017.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/018.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/019.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/020.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/021.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/022.png">
+<meta property="og:image" content="http://yoursite.com/img/浅谈HashMap/023.png">
+<meta property="og:updated_time" content="2019-05-19T07:50:16.011Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈HashMap">
+<meta name="twitter:description" content="版本jdk1.7.0_06 引入​      HashMap是java中常用的集合类之一，几乎每个程序员都知道它，也会在不经意间使用到它。HashMap常会被用来与Hashtable和ConcurrentHashMap作比较。在弄清它们的区别前，首先应该了解下各个类底层究竟是怎么实现的。本文就来谈谈HashMap的实现原理。 ​     HashMap在jdk1.7和jdk1.8的实现上有较大的不">
+<meta name="twitter:image" content="http://yoursite.com/img/浅谈HashMap/001.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/19/浅谈HashMap/">
+
+
+
+
+
+  <title>浅谈HashMap | howard Yao</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">howard Yao</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">居安思危</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/19/浅谈HashMap/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="howard Yao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/zymx14.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="howard Yao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅谈HashMap</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-19T11:54:29+08:00">
+                2019-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/java基础/" itemprop="url" rel="index">
+                    <span itemprop="name">java基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/19/浅谈HashMap/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/05/19/浅谈HashMap/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/05/19/浅谈HashMap/" class="leancloud_visitors" data-flag-title="浅谈HashMap">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h3><p>jdk1.7.0_06</p>
+<h3 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h3><p>​      HashMap是java中常用的集合类之一，几乎每个程序员都知道它，也会在不经意间使用到它。HashMap常会被用来与Hashtable和ConcurrentHashMap作比较。在弄清它们的区别前，首先应该了解下各个类底层究竟是怎么实现的。本文就来谈谈HashMap的实现原理。</p>
+<p>​     HashMap在jdk1.7和jdk1.8的实现上有较大的不同，本文仅针对<strong>jdk1.7</strong>（jdk7不同的小版本细节上也有些不同）来谈论，关于HashMap在jdk1.8下的实现将在之后有空补充。</p>
+<h3 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h3><p>   HashMap的继承关系如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HashMap</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">extends</span> <span class="title">AbstractMap</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;</span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">Map</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt;, <span class="title">Cloneable</span>, <span class="title">Serializable</span></span></span><br></pre></td></tr></table></figure>
+<p>HashMap继承自AbstractMap，同时实现了Map、Cloneable和Serializable接口。因此，HashMap支持序列化(Serializable只是个标注性接口，并没有任何方法。实际上jdk提供的大部分类都实现了这个接口)，HashMap可以被克隆(Cloneable也是一个标注性的接口，具体clone()是Object类的方法，需要自行重写以实现对应类的clone)</p>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><p>先来简单了解下HashMap里的几个变量：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_INITIAL_CAPACITY = <span class="number">16</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAXIMUM_CAPACITY = <span class="number">1</span> &lt;&lt; <span class="number">30</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> DEFAULT_LOAD_FACTOR = <span class="number">0.75f</span>;</span><br><span class="line"><span class="keyword">transient</span> Entry[] table;</span><br><span class="line"><span class="keyword">transient</span> <span class="keyword">int</span> size;</span><br><span class="line"><span class="keyword">int</span> threshold;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">float</span> loadFactor;</span><br><span class="line"><span class="keyword">transient</span> <span class="keyword">int</span> modCount;</span><br></pre></td></tr></table></figure>
+<p>DEFAULT_INITIAL_CAPACITY：默认初始化大小为16，这里主要是用在初始化Entry数组的大小；</p>
+<p>MAXIMUM_CAPACITY：hashmap最大限制容量</p>
+<p>DEFAULT_LOAD_FACTOR：默认负载因子，默认0.75，主要是用于扩容的判断的，后面扩容时会详细说明；</p>
+<p>table：是存储主要数据的数组，每一个又称为槽(bucket)，初始默认数组大小为16(DEFAULT_INITIAL_CAPACITY 决定)，每一个槽又是一个链表的头结点。</p>
+<p>size：HashMap实际存储键值对的数量；</p>
+<p>threshold：threshold = capacity * loadFactor，是判断是否需要扩容的阈值。</p>
+<p>loadFactor：实际负载因子，若没有自己赋值，则默认loadFactor=DEFAULT_LOAD_FACTOR；</p>
+<p>modCount：主要是用在fast-fail机制的判断，这里可暂时不理会。在进行迭代时该参数有重要作用。可能有些参数还不是很理解，可暂时放下，后面在解释HashMap具体方法的时候可能会好理解些。</p>
+<h3 id="存储结构"><a href="#存储结构" class="headerlink" title="存储结构"></a>存储结构</h3><p>在继续往下理解之前，先来了解下HashMap底层是怎么存储数据的。</p>
+<p>在上面的属性中可以看到hashmap有一个<strong>Entry</strong>类数组，那么Entry具体是个怎么样的结构呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">transient</span> Entry[] table;</span><br></pre></td></tr></table></figure>
+<p>通过源码看到，Entry是HashMap的一个<strong>静态内部类</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> K key;</span><br><span class="line">        V value;</span><br><span class="line">        Entry&lt;K,V&gt; next;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> hash;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Creates new entry.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        Entry(<span class="keyword">int</span> h, K k, V v, Entry&lt;K,V&gt; n) &#123;</span><br><span class="line">            value = v;</span><br><span class="line">            next = n;</span><br><span class="line">            key = k;</span><br><span class="line">            hash = h;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> K <span class="title">getKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> key;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> V <span class="title">getValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> value;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> V <span class="title">setValue</span><span class="params">(V newValue)</span> </span>&#123;</span><br><span class="line">            V oldValue = value;</span><br><span class="line">            value = newValue;</span><br><span class="line">            <span class="keyword">return</span> oldValue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Map.Entry))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            Map.Entry e = (Map.Entry)o;</span><br><span class="line">            Object k1 = getKey();</span><br><span class="line">            Object k2 = e.getKey();</span><br><span class="line">            <span class="keyword">if</span> (k1 == k2 || (k1 != <span class="keyword">null</span> &amp;&amp; k1.equals(k2))) &#123;</span><br><span class="line">                Object v1 = getValue();</span><br><span class="line">                Object v2 = e.getValue();</span><br><span class="line">                <span class="keyword">if</span> (v1 == v2 || (v1 != <span class="keyword">null</span> &amp;&amp; v1.equals(v2)))</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> (key==<span class="keyword">null</span>   ? <span class="number">0</span> : key.hashCode()) ^</span><br><span class="line">                   (value==<span class="keyword">null</span> ? <span class="number">0</span> : value.hashCode());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> getKey() + <span class="string">"="</span> + getValue();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * This method is invoked whenever the value in an entry is</span></span><br><span class="line"><span class="comment">         * overwritten by an invocation of put(k,v) for a key k that's already</span></span><br><span class="line"><span class="comment">         * in the HashMap.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">recordAccess</span><span class="params">(HashMap&lt;K,V&gt; m)</span> </span>&#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * This method is invoked whenever the entry is</span></span><br><span class="line"><span class="comment">         * removed from the table.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">recordRemoval</span><span class="params">(HashMap&lt;K,V&gt; m)</span> </span>&#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到Entry主要有四个属性，其中一个属性仍然为Entry(Entry&lt;K,V&gt; next),这其实可以说是链表的一个实现方式。</p>
+<p>HashMap是通过数组+链表的方式存储键值对的，通过计算key的哈希值得到键值对在Entry数组(bucket)的位置，如果这个位置上已经存在其他键值对了，即产生哈希冲突，则会采用拉链法进行存储。所以每个Entry数组元素实际上是一个单链表头。</p>
+<p><img src="\img\浅谈HashMap\001.png" alt="存储结构"></p>
+<h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><p>大概知道了HashMap的存储结构后，来看看HashMap的构造方法。</p>
+<p>HashMap提供了4个构造方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">()</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(Map&lt;? extends K, ? extends V&gt; m)</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span></span></span><br></pre></td></tr></table></figure>
+<p>逐一来看：</p>
+<h4 id="public-HashMap"><a href="#public-HashMap" class="headerlink" title="public HashMap()"></a>public HashMap()</h4><p><img src="\img\浅谈HashMap\002.png" alt=""></p>
+<p>源码如上，当调用hashmap的无参构造方法时，其会调用public HashMap(int initialCapacity, float loadFactor)，自动为HashMap初始化一些默认值，包括当前负载因子默认为0.75，Entry数组的大小为16，即默认16个槽(bucket),(这里16是2的4次方，实际上HashMap在扩容时也会使大小为2的n次方，关于原因会在后面解释)，threshold仍然按公式计算=0.75*16=12；即当size&gt;12时就会进行扩容操作。为什么是大于12而不是16呢？主要是因为HashMap底层的存储方式影响的。因为HashMap底层是采用hash函数来决定每一个键值对存放在哪个槽的，而我们知道，当键值对的数量越接近与槽的数量，则出现冲突的可能性就会越大，这样效率反而低下，所以这里设置了负载因子和threshold用于判断扩容的时机。</p>
+<h4 id="public-HashMap-int-initialCapacity"><a href="#public-HashMap-int-initialCapacity" class="headerlink" title="public HashMap(int initialCapacity)"></a>public HashMap(int initialCapacity)</h4><p><img src="\img\浅谈HashMap\003.png" alt=""></p>
+<p>从源码知，该方法调用了另一个构造方法。传入的参数中，第一个为我们指定的容量大小，第二个为负载因子，使用默认的0.75.</p>
+<h4 id="public-HashMap-int-initialCapacity-float-loadFactor"><a href="#public-HashMap-int-initialCapacity-float-loadFactor" class="headerlink" title="public HashMap(int initialCapacity, float loadFactor)"></a>public HashMap(int initialCapacity, float loadFactor)</h4><p><img src="\img\浅谈HashMap\004.png" alt=""></p>
+<p>这是该构造方法的源码，可以看到，前三个if都是对传入的参数大小类型等进行判断。如果指定的大小超出限制的最大容量，则直接让初始化大小等于限制的最大容量。</p>
+<p>后面的这段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> capacity = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">while</span> (capacity &lt; initialCapacity)</span><br><span class="line">      capacity &lt;&lt;= <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p>则是通过循环找到第一个大于指定的initialCapacity的且是2的n次方的数。capacity &lt;&lt;= 1指相左移一位，相当于乘以2，以此方法得到的数，都可以通过2的n次方得到。为什么一定要使用2的n次方而不直接使用我们构造时传入的容量参数呢？后面会解释。得到具体的容量capacity后，即可通过负载因子和capacity计算出threshold，而Entry数组的大小也就可以初始化了。这里init()方法是个空方法。</p>
+<p><img src="\img\浅谈HashMap\005.png" alt=""></p>
+<p>在这里init方法并没有什么用，但是其它继承HashMap的集合类可重写该方法。在linkedHashMap可看到重写了这个方法。</p>
+<h4 id="public-HashMap-Map-lt-extends-K-extends-V-gt-m"><a href="#public-HashMap-Map-lt-extends-K-extends-V-gt-m" class="headerlink" title="public HashMap(Map&lt;? extends K, ? extends V&gt; m)"></a>public HashMap(Map&lt;? extends K, ? extends V&gt; m)</h4><p>很明显，这个构造方法是打算使用另一个map的数据来构造一个新的HashMap，其源码如下：<br><img src="\img\浅谈HashMap\006.png" alt=""><br>很明显，调用的仍然是上面的构造方法，但是传入的槽的大小这个参数却是由构造这个HashMap时传入的m的大小.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(m.size() / DEFAULT_LOAD_FACTOR) + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>指的是刚好达到需要扩容的这个原数组的大小，如果这个数比16小，则仍然使用默认的16。</p>
+<p>在初始化完成后，在调用putAllForCreate方法将m的各个数据存放进去。通过putForCreat方法将e散列到对应的bucket中。putForCreate方法调用indexFor来确定键值对散列的bucket的位置。indexFor通过h &amp; (length-1)返回bucket的位置，接着遍历对应的单链表来决定是更新操作还是插入操作。(与put方法部分类似，可参考后面).</p>
+<h3 id="put方法"><a href="#put方法" class="headerlink" title="put方法"></a>put方法</h3><p>下面来分析put(K key, V value)方法。该方法的源码如下：</p>
+<p><img src="\img\浅谈HashMap\007.png" alt=""></p>
+<p>首先判断key值是否为null，如果是，则调用putForNullKey方法。putForNullKey方法的实现如下：</p>
+<p><img src="\img\浅谈HashMap\008.png" alt=""></p>
+<p>可以清楚的看到，这for中指定了使用table[0],即<strong>null key总是存放在Entry[]数组的第一个元素</strong>。再接下来的if语句中，则是判断是否已经存放了key为null的键值对，如果存在，则替换其value，并放回旧值，所以<strong>HashMap中只可能存在一个key为null键值对</strong>。如果不存在，则调用addEntry方法来设置Entry数组的第一个元素的内容:一个key为null,值为value的值。(这里modCount++主要是在迭代过程中fast-fail机制中使用，这里暂时都忽略它)，继续跟进去addEntry方法：</p>
+<p><img src="\img\浅谈HashMap\009.png" alt=""></p>
+<p>可以看出在这个方法主要是初始化了Entry数组的一个槽，并将传入的参数作为数据设置进去。其中，</p>
+<p><img src="\img\浅谈HashMap\010.png" alt=""></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e)</span><br></pre></td></tr></table></figure>
+<p>调用的是内部类Entry的构造方法。由于table[0]可能本身就已经有其他非null数据连接成的链表，那么新增一个节点是怎么处理的呢？看看下面这个构造方法的具体实现：</p>
+<p><img src="\img\浅谈HashMap\011.png" alt=""></p>
+<p>从源码看到，当前table[0]指向新的Entry，而原来的则成为其next(next=n),举个例子，原先table[0]上是A-&gt;B-&gt;C,这时候有个D刚好hash后也在table[0]这个槽，所以加入后变成D-&gt;A-&gt;B-&gt;C,即<strong>当前数组元素中链表头节点所在的数据是最后插入的元素</strong>。</p>
+<p>同时，在完成后插入新值后还要将size+1(size用来记录当前HashMap有多少个键值对)，并判断其大小是否超过了threshold(if(size++&gt;=threshold))，如果超过，则要调用方法进行扩容,扩容时传进的参数为当前数组的大小*2。关于resize扩容的具体内容，留待后面再说。暂且回到pull方法。在判断了key是否null之后，假设不为null，则计算使用key的hashcode来计算其hash值，通过这个hash方法，计算出其hash结果，然后调用indexFor方法来计算得出应该将这个key-value放在Entry数组的哪个槽上：</p>
+<p><img src="\img\浅谈HashMap\012.png" alt=""></p>
+<p>这个方法的解释也是在后面说明。</p>
+<p>接着利用算出的i即在Entry数组的位置，通过for循环遍历该槽上的链表，查找是否有相同的key值，若有则覆盖旧值。</p>
+<p>如果尚未存在这个key，则仍然通过addEntry方法插入新值。这个方法在前面说过，就不再赘述。</p>
+<h3 id="get方法"><a href="#get方法" class="headerlink" title="get方法"></a>get方法</h3><p>先看看源码：</p>
+<p><img src="\img\浅谈HashMap\013.png" alt=""></p>
+<p>首先当然是先判断key是否为null，如果是，则调用getForNullKey方法，由上面put方法的分析，我们知道key为null的键值对都是存放在table[0]里的，所以这里不难猜测，getForNullKey方法就是从table[0]里取出数据：</p>
+<p><img src="\img\浅谈HashMap\014.png" alt=""></p>
+<p>如果key不为null，则先计算Key的hash值，定位到数组中对应的bucket，然后开始遍历Entry单链表， 通过对比哈希码相同并且对象(key)相同，直到找到则返回其value，否则返回null。</p>
+<p><img src="\img\浅谈HashMap\015.png" alt=""></p>
+<h3 id="HashMap的扩容"><a href="#HashMap的扩容" class="headerlink" title="HashMap的扩容"></a>HashMap的扩容</h3><p>从上面的分析我们知道，在addEntry(int hash, K key, V value, int bucketIndex)方法中，没增加一个数据，则会对size进行判断，如果超过threshold，则会调用resize进行2倍扩容，很明显，这里<strong>扩容为原来的2倍</strong>也是满足了2的n次方。这里主要分析resize方法：</p>
+<p><img src="\img\浅谈HashMap\016.png" alt=""></p>
+<p>从源码看出，首先对原数组的容量oldCapacity进行判断，如果已经达到限制的最大容量MAXIMUM_CAPACITY，则不再进行扩容，令threshold = Integer.MAX_VALUE，然后返回。如果oldCapacity未超过MAXIMUM_CAPACITY，则new出一个新的Entry数组newTable，其大小为newCapacity，即为原来的2倍，然后调用transfer方法将原来的数据重新hash到新数据中去，因为数组的大小变了，则原来的数据经过hash计算后就不一定会在原来的那个位置了，所以这里需要对原来的全部数据进行重新hash计算并重新存储，当数据比较多时，这个开销还是比较大的。(这个过程一般也称<strong>rehash</strong>)</p>
+<p><img src="\img\浅谈HashMap\017.png" alt=""></p>
+<p>完成新数组的复制操作后，将HashMap的属性table指向新的数组newTable，然后重新计算threshold的值。至此，完成了HashMap的扩容操作。</p>
+<h3 id="jdk1-7和jdk1-8下HashMap比较明显的变化"><a href="#jdk1-7和jdk1-8下HashMap比较明显的变化" class="headerlink" title="jdk1.7和jdk1.8下HashMap比较明显的变化"></a>jdk1.7和jdk1.8下HashMap比较明显的变化</h3><p>jdk1.7下，但链表过长时，可能就会有效率问题，如果不幸大部分数据都落在同一个bucket下，就会形成很长的链，算法就退化为O(n)的时间复杂度了，jdk1.8下hashMap增加了红黑树，即结构是数组+链表+红黑树，默认是链表长度大于8时，链表会转化为红黑树，从而提高查找效率。由于增加了红黑树，jdk1.8的hashmap源码看起来就比1.7的复杂了不少，有兴趣的可以看看哈。</p>
+<h3 id="为什么HashMap容量一定要为2的n次方"><a href="#为什么HashMap容量一定要为2的n次方" class="headerlink" title="为什么HashMap容量一定要为2的n次方"></a>为什么HashMap容量一定要为2的n次方</h3><p>下面就来说说前面留下的这个问题。我们知道，hashmap默认初始化时table数组大小为16，即2的4次幂，如果发生扩容，每次也是扩容2倍。并且在构造函数时，如果你指定了大小，比如指定了6，那么实际会变成8，即满足&gt;6的且是2的幂的数。那么，为什么一定要严格遵守这个呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Returns index for hash code h.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">indexFor</span><span class="params">(<span class="keyword">int</span> h, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> h &amp; (length-<span class="number">1</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>我们知道，HashMap的存储结构是<strong>数组+单链表</strong>，当然，我们希望数据能存放的越均匀越好，链表长度越短越好，即减少冲突，可以hash找到数组就直接找到需要的数，这除了控制扩容的时机(即负载因子的选择)外，还要选择正确的hash函数，比较好的一种就是：哈希值%容量，我们看到HashMap的indexFor方法是怎么实现的，可以看到，其使用了<strong>位运算</strong>h &amp; (length-1) ，很明显，使用位运算是为了提高效率，因为机器在计算位运算时远远比计算乘除运算快得多。而HashMap在扩容时进行rehash会重新计算其位置，所以这一步的效率还是比较重要的。那么，这段h &amp; (length-1)究竟代表了什么样的运算呢?其实容量设计为2的幂主要就是与这里有关，因为2的n次方换算为二进制肯定就是1后面n个0，比如16的二进制为10000，即length-1=15即01111，而&amp;运算就是只有两个都为1，结果才为1，则此时当任意大于0小于16的数与01111进行与操作后，结果都是其本身，而当任何大于15的数与01111进行与操作后，结果相当于进行了%运算，这正是达到了前面说的比较好的hash函数。</p>
+<p>比如：14，二进制01110，与15进行与操作：01110&amp;01111=01110，还是14；</p>
+<p>又比如：17，二进制10001，与15进行与操作：10001&amp;01111=00001，结果为1，相当于(17-1)%(16-1)=1; (数组是从0开始的)</p>
+<p>从某方面看，将容量设置为2的幂可能浪费了空间，比如你构造函数时只需要容量5，但是却变成了8，浪费了空间，但是从另一个角度看，却也节省了空间，比如：假设HashMap的容量不遵循2的n次幂，比如为15时，此时不为2的n次幂，其二进制01111，length-1后等于01110，则此时不论h为什么，h&amp;(length-1)得到的二进制结果末尾是不可能为1的，因为&amp;操作要求两个都为1，结果才为1，而这里length-1结果为01110，很明显已经不满足这个条件了，所以此时Entry数组的某些槽如：0001，0011，0101，1001，1011，0111，1101却永远无法存放数据了，这在一定程度上浪费了空间。这样导致的结果是，会增加发生冲突的可能性，进而减慢了查询。</p>
+<h3 id="关于Hashtable和HashMap的区别"><a href="#关于Hashtable和HashMap的区别" class="headerlink" title="关于Hashtable和HashMap的区别"></a>关于Hashtable和HashMap的区别</h3><p><strong>区别1：</strong>HashMap<strong>允许</strong>key和value为null，但仅允许一个key为的null，而Hashtable<strong>不允许</strong>key或value为null；</p>
+<p>HashMap的这一点，在上面我们已经看出了，但有key为null多个时，会替换旧的key为null的值，所以仅可能存在一个，并且HashMap对value没有null的限制；关于Hashtable的这一点，我们可以通过源码说明：</p>
+<p><img src="\img\浅谈HashMap\018.png" alt=""></p>
+<p>而在HashMap中，在求key.hashCode前会对key进行null的判断，若为null，则调用putForNullKey方法，此时将hash值设置为0，具体通过源码即可知；</p>
+<p><strong>区别2：</strong>HashMap是<strong>非线程安全</strong>的，而Hashtable是<strong>线程安全</strong>的；</p>
+<p>Hashtable的线程安全主要体现在它的大部分方法都是加了 sychronized的：</p>
+<p><img src="\img\浅谈HashMap\019.png" alt=""></p>
+<p><img src="\img\浅谈HashMap\020.png" alt=""></p>
+<p><img src="\img\浅谈HashMap\021.png" alt=""></p>
+<p><strong>区别3：</strong>由于HashMap是没有加锁的，自然HashMap在<strong>效率</strong>上会比Hashtable好一些；</p>
+<p><strong>区别4：</strong>Hashtable使用 <strong>enumerator</strong>迭代器，HashMap使用 <strong>Iterator</strong>迭代器， Iterator是 fail-fast迭代器，即在迭代过程中，如果有其他线程增加或者移除了集合中的元素，则会抛出 <strong>ConcurrentModificationException</strong>异常;</p>
+<p><strong>区别5：</strong>继承的父类不同，Hashtable继承了Dictionary，而HashMap 继承了AbstractMap;</p>
+<p><img src="\img\浅谈HashMap\022.png" alt=""></p>
+<p><img src="\img\浅谈HashMap\023.png" alt=""></p>
+<p>但二者都实现了Map接口。</p>
+<p><strong>区别6：</strong>HashMap把Hashtable的<strong>contains方法</strong>去掉了，改成containsValue和containsKey，因为contains方法容易让人引起误解。    Hashtable则保留了contains，containsValue和containsKey三个方法，其中contains和containsValue功能相同。containsValue和containsKey的源码很简单，有兴趣可以自己查看。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java基础/" rel="tag"><i class="fa fa-tag"></i> java基础</a>
+          
+            <a href="/tags/java/" rel="tag"><i class="fa fa-tag"></i> java</a>
+          
+            <a href="/tags/扩容/" rel="tag"><i class="fa fa-tag"></i> 扩容</a>
+          
+            <a href="/tags/HashMap/" rel="tag"><i class="fa fa-tag"></i> HashMap</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/04/继承和组合的区别/" rel="next" title="继承和组合的区别">
+                <i class="fa fa-chevron-left"></i> 继承和组合的区别
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/19/浅谈LinkedHashMap/" rel="prev" title="浅谈LinkedHashMap">
+                浅谈LinkedHashMap <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/zymx14.png" alt="howard Yao">
+            
+              <p class="site-author-name" itemprop="name">howard Yao</p>
+              <p class="site-description motion-element" itemprop="description">居安思危</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#版本"><span class="nav-number">1.</span> <span class="nav-text">版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引入"><span class="nav-number">2.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关系"><span class="nav-number">3.</span> <span class="nav-text">关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性"><span class="nav-number">4.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储结构"><span class="nav-number">5.</span> <span class="nav-text">存储结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构造方法"><span class="nav-number">6.</span> <span class="nav-text">构造方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#public-HashMap"><span class="nav-number">6.1.</span> <span class="nav-text">public HashMap()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#public-HashMap-int-initialCapacity"><span class="nav-number">6.2.</span> <span class="nav-text">public HashMap(int initialCapacity)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#public-HashMap-int-initialCapacity-float-loadFactor"><span class="nav-number">6.3.</span> <span class="nav-text">public HashMap(int initialCapacity, float loadFactor)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#public-HashMap-Map-lt-extends-K-extends-V-gt-m"><span class="nav-number">6.4.</span> <span class="nav-text">public HashMap(Map&lt;? extends K, ? extends V&gt; m)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#put方法"><span class="nav-number">7.</span> <span class="nav-text">put方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#get方法"><span class="nav-number">8.</span> <span class="nav-text">get方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap的扩容"><span class="nav-number">9.</span> <span class="nav-text">HashMap的扩容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jdk1-7和jdk1-8下HashMap比较明显的变化"><span class="nav-number">10.</span> <span class="nav-text">jdk1.7和jdk1.8下HashMap比较明显的变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么HashMap容量一定要为2的n次方"><span class="nav-number">11.</span> <span class="nav-text">为什么HashMap容量一定要为2的n次方</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于Hashtable和HashMap的区别"><span class="nav-number">12.</span> <span class="nav-text">关于Hashtable和HashMap的区别</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">howard Yao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'kGoOvGEkjNH31vPTrcwNPdg7-gzGzoHsz',
+        appKey: 'gKfxvdXmGv9uQaONxLTqP62b',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("kGoOvGEkjNH31vPTrcwNPdg7-gzGzoHsz", "gKfxvdXmGv9uQaONxLTqP62b");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
