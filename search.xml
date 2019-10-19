@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[redis的数据类型]]></title>
+    <url>%2F2019%2F10%2F19%2Fredis%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%2F</url>
+    <content type="text"><![CDATA[redis的数据类型redis支持5种数据类型(对象)。分别是字符串(String)、列表(list)、哈希(hash)、集合(set)、有序集合(zset/sorted set)。redis中的键和值都是一个对象。redis使用引用计数实现内存回收，当一个对象不再被使用时，会被回收。每个对象也会记录最后一次被访问的时间，可用于计数空转时间(回收算法为lru时有用) 字符串String 字符串对象的编码可以是int、raw、embstr。当保存的是整型，则是int，不大于某个阈值(不同版本阈值可能不一样)的字符串，则为embstr，其余大字符串则是raw，raw本质上是SDS(简单动态字符串)。 字符串对象是二进制安全的，因为其使用的是len来记录长度，和c语言不同，所以可以存放图片等二进制数据。 redis会共享值为0-9999的字符串对象。 可通过OBJECT ENCODING key来查看编码。其它类型也一样。 常见命令：1234567891011121314151617181920212223242526# 设置指定 key 的值SET key value# 获取指定 key 的值GET key # 返回 key 中字符串值的子字符GETRANGE key start end# 将给定 key 的值设为 value ，并返回 key 的旧值GETSET key value# 设置指定key的值和过期时间。单位秒SETEX key seconds value# 只有在 key 不存在时设置 key 的值SETNX key value# 返回key所储存的字符串值的长度STRLEN key# key值+1INCR key# key值增加incrementINCRBY key increment# key值增加increment 浮点类型INCRBYFLOAT key increment# key值-1DECR key# key值减少incrementDECRBY key decrement# 指定key追加valueAPPEND key value 列表list 列表对象的编码可以是ziplist或linkedList。 ziplist使用压缩列表实现，linkedList使用双端链表实现。 长度和元素个数满足条件(不超过，不同redis版本不一样)才会使用ziplist，超过则使用linkedlist linkedlist编码的列表对象底层还有使用string对象。字符串对象是redis的5种对象中唯一一种会被其它四种对象嵌套的对象。 常见命令123456789101112# 将一个或多个值插入到列表头部LPUSH key value1 [value2]# 在列表尾部中添加一个或多个值RPUSH key value1 [value2]# 列表长度LLEN key# 移出并获取列表的第一个元素LPOP key# 移除列表元素LREM key count value# 移除列表的最后一个元素，返回值为移除的元素RPOP key 哈希Hash 哈希对象的编码可以是ziplist或hashtable ziplist使用压缩列表实现(键值依次压入列表尾)，hashtable使用字符串实现，键和值都是一个字符串对象 长度和元素个数满足条件(不超过，不同redis版本不一样)才会使用ziplist，超过则转换为hashtable 常见命令：123456789101112# 删除哈希表中指定字段的值HDEL key field1 [field2]# 获取哈希表中指定字段的值HGET key field# 查看哈希表 key 中，指定的字段是否存在HEXISTS key field# 获取哈希表key的所有字段和值HGETALL key# 获取所有哈希表中的字段HKEYS key# 获取哈希表中字段的数量HLEN key+ 集合set 集合对象的编码可以是intset或hashtable intset使用整数集合实现，有序。hashtable使用字典实现，字典的值都设为null 长度和元素个数满足条件(不超过，不同redis版本不一样)，并且保存的值不包含字符串时才会使用intset，否则转换为hashtable。 常见命令：12345678# 向集合key添加一个或多个成员SADD key member1 [member2]# 获取集合的成员数SCARD key# 返回给定所有集合的差集SDIFF key1 [key2]# 判断 member 元素是否是集合 key 的成员SISMEMBER key member 有序集合sorted set 有序,不允许重复 有序集合对象的编码可以是ziplist或skiplist ziplist使用压缩列表作为底层实现，每个集合元素使用2个紧挨的压缩节点保存，一个保存元素，一个保存元素的分值(score)。压缩列表内的元素按分值从小到大排序。 skiplist编码使用zset结构作为底层实现，zset结构包含一个字典和一个跳跃表。字典dict保存了元素的成员到分值的映射，键是成员，字典的值则是元素对应的分值，利用字典可以用O(1)的时间复杂度找到给定成员的分值。跳表则按分值从小到大保存了集合的成员，通过跳表可以进行范围查找。 为什么同时使用跳表和字典？因为跳表不适合根据成员找到分值，时间复杂度O(logN)，而字典是无序的，每次范围查找都要额外排序O(NlogN)时间复杂度和O(N)空间复杂度。 字典和跳表通过指针来共享元素的成员和分值。不会存储重复的成员和分值。 长度和元素个数满足条件(不超过，不同redis版本不一样)才会使用ziplist，超过则使用skiplist。 常见命令：123456789101112# 向有序集合添加一个或多个成员，或者更新已存在成员的分数ZADD key score1 member1 [score2 member2]# 获取有序集合的成员数ZCARD key# 计算在有序集合中指定区间分数的成员数ZCOUNT key min max# 有序集合中对指定成员的分数加上增量 incrementZINCRBY key increment member# 返回有序集合中指定成员的索引ZRANK key member# 返回有序集中，成员的分数值ZSCORE key member 小结对于上面5中对象可能用到的编码总结如下： 对象类型 编码 字符串 int、raw、embstr 列表 ziplist、linkedlist 哈希 ziplist、hashtable 集合 intset、hashtable 有序集合 ziplist、skiplist 对于各自编码所对应的数据结构，会在后面有空的时候另行总结。 本文总结自《redis设计与实现》]]></content>
+      <categories>
+        <category>redis</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>redis</tag>
+        <tag>数据结构</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[浅谈LinkedHashMap]]></title>
     <url>%2F2019%2F05%2F19%2F%E6%B5%85%E8%B0%88LinkedHashMap%2F</url>
     <content type="text"><![CDATA[引入LinkedHashMap也是java中常用的集合类之一，LinkedHashMap在jdk1.7与jdk1.8也有一点区别，其中一部分区别来源于其父类HashMap在jdk1.8的变化。本篇主要简单记录下jdk1.7(1.7.0_06 具体版本不同也有一定的差别)下LinkedHashMap的主要实现原理，对于jdk1.8的LinkedHashMap其基本原理差不多，故没有花大量的时间去了解，仅仅简单看了下一些变化。会在后面简单说下区别。 关系LinkedHashMap的继承关系如下：123public class LinkedHashMap&lt;K,V&gt; extends HashMap&lt;K,V&gt; implements Map&lt;K,V&gt;&#123; //省略一堆代码。。。&#125; 主要继承了HashMap和实现了Map，所以实现上与hashMap有很多是一样的，了解LinkHashMap之前需要先去了解HashMap的主要实现。这里主要谈谈LinkedHashMap，所以对于HashMap的不会花太多去描述。可参考网上资料和之前的文章。HashMap继承自AbstractMap，同时实现了Map、Cloneable和Serializable接口。HashMap的关系如下:12345public class HashMap&lt;K,V&gt; extends AbstractMap&lt;K,V&gt; implements Map&lt;K,V&gt;, Cloneable, Serializable&#123; //省略一堆代码。。。 &#125; 使用与HashMap不同的是，LinkedHashMap是有序的123456789101112public static void main(String[] args) &#123; Map&lt;String, String&gt; linkedHashMap = new LinkedHashMap&lt;&gt;(); linkedHashMap.put("test01","a1"); linkedHashMap.put("test02","a2"); linkedHashMap.put("test03","a3"); Set&lt;Map.Entry&lt;String, String&gt;&gt; mapSet = linkedHashMap.entrySet(); for (Map.Entry&lt;String, String&gt; entry : mapSet) &#123; String key = entry.getKey(); String value = entry.getValue(); System.out.println(key + " " + value); &#125;&#125; 该程序运行后的结果与put的顺序是一致的。 test01 a1test02 a2test03 a3 除此外，LinkedHashMap还常被用于LRU缓存。那么LinkedHashMap是怎么保证其有序和实现LRU的呢？ 存储结构LinkedHashMap在HashMap成员变量的基础上，又新增了两个变量：123456789101112/** * The head of the doubly linked list. */private transient Entry&lt;K,V&gt; header;/** * The iteration ordering method for this linked hash map: &lt;tt&gt;true&lt;/tt&gt; * for access-order, &lt;tt&gt;false&lt;/tt&gt; for insertion-order. * * @serial */private final boolean accessOrder; 其中，accessOrder默认为false，这点在构造函数中可以看到。该参数主要是用于设置是否在访问键值对的时候对key进行排序，false表示不会进行排序，后面会介绍该参数具体的体现。Entry是LinkedHashMap的静态内部类，该类也继承于HashMap的内部类Entry。其主要实现如下：123456789101112131415161718192021222324252627282930313233343536373839404142434445464748/** * LinkedHashMap entry. */private static class Entry&lt;K,V&gt; extends HashMap.Entry&lt;K,V&gt; &#123; // These fields comprise the doubly linked list used for iteration. Entry&lt;K,V&gt; before, after; Entry(int hash, K key, V value, HashMap.Entry&lt;K,V&gt; next) &#123; super(hash, key, value, next); &#125; /** * Removes this entry from the linked list. */ private void remove() &#123; before.after = after; after.before = before; &#125; /** * Inserts this entry before the specified existing entry in the list. */ private void addBefore(Entry&lt;K,V&gt; existingEntry) &#123; after = existingEntry; before = existingEntry.before; before.after = this; after.before = this; &#125; /** * This method is invoked by the superclass whenever the value * of a pre-existing entry is read by Map.get or modified by Map.set. * If the enclosing Map is access-ordered, it moves the entry * to the end of the list; otherwise, it does nothing. */ void recordAccess(HashMap&lt;K,V&gt; m) &#123; LinkedHashMap&lt;K,V&gt; lm = (LinkedHashMap&lt;K,V&gt;)m; if (lm.accessOrder) &#123; lm.modCount++; remove(); addBefore(lm.header); &#125; &#125; void recordRemoval(HashMap&lt;K,V&gt; m) &#123; remove(); &#125;&#125; 可以看到该类的变量是其自身，before和after，看到这里估计猜出来了，LinkedHashMap内部类Entry实际上维护的是一个双向链表，before和after分别指向前一个结点和后一个结点，而且还是一个循环双向链表，这点在插入的代码可以看出(jdk1.8改变了这点，并不是循环的双向链表)。而LinkedHashMap又是继承于HashMap的，所以底层大部分实现是跟HashMap类似的，而HashMap是数组+链表(用于拉链法)，jdk1.8之后的HashMap对于链表大于8个元素的还会转化为红黑树。所以可以猜测LinkedHashMap是HashMap+双向链表的实现方式，而这里的双向链表就是为了维护元素的顺序。LinkHashMap的成员变量header实际上是该双向链表的头结点。这里简单附上一个图供参考： 构造方法LinkedHashMap提供了5个构造方法： LinkedHashMap()1234public LinkedHashMap() &#123; super(); accessOrder = false;&#125; 这里可以看到accessOrder默认设置为false。super调用的是hashmap的构造方法。在该方法里，设置了默认容量16和默认的负载因子0.75，具体代码就不贴出来了，可以自行查看。HashMap的构造方法最终调用的是HashMap(int initialCapacity, float loadFactor)：在HashMap中init()方法是空实现，而在linkedHashMap中则实现了该方法，所以在构造函数调用过程最终也有调用linkedHashMap的init方法，该方法具体实现如下:在该方法中，会初始化双向链表的头结点，即new一个内部的entry对象，并将其首尾连接形成双向链表： LinkedHashMap(int initialCapacity)1234public LinkedHashMap(int initialCapacity) &#123; super(initialCapacity); accessOrder = false;&#125; accessOrder默认设置为false。自定义了初始化容量，super调用的是hashmap的构造方法。在该方法里，设置了容量initialCapacity(实际上会找到大于等于initialCapacity且是2的n次幂的最小数,容量7-&gt;8,14-&gt;16, 看了几个版本的jdk这里的初始化的时间略有不同)和默认的负载因子0.75,可看上面的截图。同样的，也会调用init方法。 LinkedHashMap(int initialCapacity, float loadFactor)1234public LinkedHashMap(int initialCapacity, float loadFactor) &#123; super(initialCapacity, loadFactor); accessOrder = false;&#125; 与LinkedHashMap(int initialCapacity)类似，但指定了负载因子。 HashMap(Map&lt;? extends K, ? extends V&gt; m)1234public LinkedHashMap(Map&lt;? extends K, ? extends V&gt; m) &#123; super(m); accessOrder = false;&#125; 初始化的同时传入Map参数，设置相应的键值对，LinkHashMap的容量由传入的集合和默认的初始化大小来比较共同决定。主要实现参考HashMap相应构造方法。 LinkedHashMap(int initialCapacity, float loadFactor,boolean accessOrder)123456public LinkedHashMap(int initialCapacity, float loadFactor, boolean accessOrder) &#123; super(initialCapacity, loadFactor); this.accessOrder = accessOrder;&#125; 和前面类似，指定了accessOrder。 PutLinkedHashMap并没有看到put方法，所以其调用的还是HashMap的方法。这里主要注意的是LinkedHashMap重写了的几个方法：void recordAccess(HashMap&lt;K,V&gt; m)void addEntry(int hash, K key, V value, int bucketIndex)void createEntry(hash, key, value, bucketIndex);void transfer(HashMap.Entry[] newTable, boolean rehash) addEntry()注意LinkedHashMap重写了addEntry方法。在该方法中，先调用了HashMap中addEntry方法：该方法主要做了扩容判断和扩容操作(这里linedhashmap扩容操作后的rehash方法也有所变化)，最后会调用createEntry方法创建元素。 createEntry()LinkHashMap也对createEntry进行了重写：在该方法中，会创建新的Entry并存放与相应的槽(数组对应位置)的表头，然后再将其加入双向链表。这里仅看调用addBefore方法前后双向链表的变化如图：这里的after和before是相对header而言的，加入a3后后如图： 再回过头来看addEntry方法，在LinkedHashMap的addEntry方法中，除了调用HashMap的addEntry方法，在下面还有一步if判断removeEldestEntry(eldest)，eldest指向头结点的下一个结点，也就是在我们看来的双向链表的第一个结点，而这里LinkedHashMap并没有具体实现removeEldestEntry，而仅是返回了false，所以默认情况下，这步if是不会返回true。关于这里这么做的用处，留到后面再说。 transfer 双向链表遍历再往回看，在调用HashMap的addEntry方法中，会先对hashmap的容量(这里实际指linkedHashMap的容量)做判断，超过threshold则会进行resize即扩容，扩容原理与HashMap的一致的，但在扩容后的rehash过程会调用transfer方法，LinkedHashMap对该方法也重写了：在HashMap中该方法是遍历table数组，对每个槽的链表进行遍历来完成rehash（重新计算Hash值存放到新数组的对应的位置里），而LinkedHashMap则换了另一种遍历方式，遍历其双向链表来达到reHash的目的。后者显然编码会简单容易看懂些，且效率整体上会略好与前者（因为你不能确定table数组每个位置都一定有键值对存放）。 recordAccess 重排序前面提到，LinkedHashMap有个accessOrder参数，该参数用来设置是否重排序，true表示会进行重排序，即在put和get的过程中，会将访问到的元素从链表中移除，添加到链尾部。这里仅看看put过程的重排实现，get中也有类似的实现，留待后面分析get方法的时候再看。HashMap对recordAccess方法是空实现的，而LinkedhashMap重写了该方法，如图：当accessOrder为true时，且在put过程中已存在该key时，LinkedHashMap除了会覆盖该key的值外，会认为该key被访问了，所以还会对该key进行重排序。在方法中，remove会从链表中移除该结点，然后调用addBefore将该结点加入到链表尾部。get方法也会进行类似的判断和操作。其中，modCount涉及到集合的快速失败机制（fast-fail），是另一个知识点了，这里不展开说了。可去参考前面的文章。 GetLinkedHashMap重写了get方法：在该方法中，调用了HashMap的getEntry方法来获取key的value，该方法主要是遍历table和链表来获取指定key的value，具体实现参考hashmap的getEntry,这里不展开重复叙述。除此外，还调用了前面提到的recordAccess方法，判断是否需要重排序，如果为true则会将被访问到的entry从链表移除并添加到双向链表尾部。 containsValueLinkedHashMap重写了containsValue方法，该方法很简单，就是遍历双向链表判断是否存在值为value的键值对。在HashMap中该方法的实现是遍历数组+链表，而由于LinkedHashMap维护了双向链表，所以利用该优势直接遍历一次该链表即可。 clearLinkedHashMap重写了clear方法。在重写的方法中，先是调用了父类HashMap的clear方法，然后在将双向链表的头部header的首尾相连，使之自己形成环(就如刚刚初始化那样)，从而与其他数据脱离关系。而在父类的clear方法中将table数组的每个都设置为null，并将存储数据量size设置为0。 remove由于LinkedHashMap相比HashMap，多维护了双向链表这一结构，所以在移除数据的时候，除了需要像HashMap那样从table+链表这个结构里移除外，还需要从双向链表中移除的，而LinkedHashMap并没有重写remove方法，在HashMap的remove方法中： 可以看到调用了recordRemoval()，在HashMap中该方法是个空实现，而LinkedHashMap则重写了该方法：通过调用remove将当前entry从链表中移除。 遍历Map的遍历有好几种方式，这里就仅拿entrySet的方式说明。123456789101112Map&lt;String, String&gt; linkedHashMap = new LinkedHashMap&lt;&gt;();linkedHashMap.put("a","1");linkedHashMap.put("b","1");linkedHashMap.put("c","1");Set&lt;Map.Entry&lt;String, String&gt;&gt; set = linkedHashMap.entrySet();Iterator&lt;Map.Entry&lt;String, String&gt;&gt; iterator = set.iterator();while(iterator.hasNext()) &#123; Map.Entry entry = iterator.next(); String key = (String) entry.getKey(); String value = (String) entry.getValue(); System.out.println(key + " " + value);&#125; 一步一步来说明，这里调用的是hashMap的entrySet方法：其中，entrySet0方法中，变量entrySet在HashMap的声明如下：private transient Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet = null;所以e==null是成立的，entrySet()最终返回了HashMap的内部类EntrySet。接着调用了iterator方法，该方法调用了newEntryIterator方法，LinkedHashMap中对该方法进行了重写：返回的迭代器是LinkedHashMap的内部类EntryIterator：EntryIterator继承自LinkedHashMap内部抽象类：LinkedHashIterator，而只重写了next方法。该迭代器的遍历是利用LinkedHashMap的链表进行遍历。在hasNext()中，通过nextEntry != header来判断是否遍历完真个链表，因为由前面知道，该链表是个循环双向链表，遍历一遍后最终会回到header。next()方法的实现如下：其中，lastReturned保存的是最后一个返回的entry，nextEntry保存的是下一次要返回的entry。由上面也可以看出，LinkedHashMap也是会抛出ConcurrentModificationException异常的(fast-fail)。至于getKey()和getValue()是HashMap.entry中的方法，这里不再赘述。到这里，可以看出为什么LinkedHashMap的遍历是有序的，因为其是通过双向链表来遍历的，从而保证了顺序，这点与HashMap不同。 LinkedHashMap在jdk1.7和jdk1.8的区别对于jdk1.7,实际上不同版本的实现也是有些许区别的，就拿我发现的其中一点，HashMap构造方法：HashMap(int initialCapacity, float loadFactor)中对于initialCapacity初始化容量，在1.7.0_06和1.7.0_51中还是有区别的，主要是初始化容量的时机不同，但最终结果还是一样的。事实上jdk7早期版本和前面的版本是通过while循环来计算取得最小的2的n次方的数的，在jdk1.7后面的版本以及jdk8开始都是一个单独方法中计算取得最小的2的n次方的数的。比如jdk8的计算如下：通过移位来计算获取，比如14,通过移位后是15，然后判断后+1返回16。对于jdk1.8中LinkedHashMap的源码并没有花太多时间去看，只是简单浏览下。其中，jdk8中LinkedHashMap的成员变量多了tail尾结点，而通过初始化和put发现其不再是jdk7中循环双向链表，而只是一个双向链表。至于其它区别，没有细看，原理应该都差不多，其中由于HashMap在jdk8中多了红黑树的实现，所以相应的LinkedHashMap也是类似的变动。 LinkedHashMap的使用场景在前面的介绍中可以看到，LinkedHashMap是有序的，所以对于需要有序的集合会使用到LinkedHashMap。除此外，还常常被用于实现LRU缓存实现，主要是重写removeEldestEntry()。在初始化时将accessOrder设置为true并重写该方法，则调用get或put方法，对被访问的entry进行重排序，被访问的entry会被移动到链表尾，而removeEntryForKey()会移除链表头的entry：1234Entry&lt;K,V&gt; eldest = header.after;if (removeEldestEntry(eldest)) &#123; removeEntryForKey(eldest.key);&#125; 所以可以达到lru算法的目的。在mybatis的缓存模块中，有一个LruCache类(org.apache.ibatis.cache.decorators.LruCache),就是基于LinkedHashMap实现的LRU缓存，其重写了removeEldestEntry方法： 总结1、LinkedHashMap继承与HashMap，所以大部分方法跟HashMap类似，包括扩容的大小等。LinkedHashMap是HashMap+双向链表的实现；2、LinkedHashMap中的所有方法没有被synchronized修饰，所以LinkedHashMap是非线程安全的，在遍历中对元素进行移除或者添加操作是可能抛出ConcurrentModificationException异常的。3、LinkedHashMap是有序的，在初始化时通过设置accessOrder可以控制其是按照插入的顺序排序还是根据访问顺序排序。]]></content>
@@ -13,8 +26,8 @@
         <category>java基础</category>
       </categories>
       <tags>
-        <tag>java基础</tag>
         <tag>java</tag>
+        <tag>java基础</tag>
         <tag>扩容</tag>
         <tag>HashMap</tag>
       </tags>
@@ -63,8 +76,8 @@
         <category>算法与数据结构</category>
       </categories>
       <tags>
-        <tag>算法</tag>
         <tag>数据结构</tag>
+        <tag>算法</tag>
         <tag>笔试</tag>
       </tags>
   </entry>
@@ -76,8 +89,8 @@
         <category>java基础</category>
       </categories>
       <tags>
-        <tag>java基础</tag>
         <tag>java</tag>
+        <tag>java基础</tag>
         <tag>抽象类</tag>
         <tag>接口</tag>
       </tags>
@@ -103,8 +116,8 @@
         <category>java基础</category>
       </categories>
       <tags>
-        <tag>java基础</tag>
         <tag>java</tag>
+        <tag>java基础</tag>
         <tag>arraylist</tag>
         <tag>扩容</tag>
       </tags>
@@ -117,8 +130,8 @@
         <category>java基础</category>
       </categories>
       <tags>
-        <tag>java基础</tag>
         <tag>java</tag>
+        <tag>java基础</tag>
         <tag>泛型</tag>
       </tags>
   </entry>
@@ -130,8 +143,8 @@
         <category>算法与数据结构</category>
       </categories>
       <tags>
-        <tag>算法</tag>
         <tag>数据结构</tag>
+        <tag>算法</tag>
         <tag>哈夫曼</tag>
         <tag>哈夫曼编码</tag>
       </tags>
@@ -168,8 +181,8 @@
         <category>java基础</category>
       </categories>
       <tags>
-        <tag>java基础</tag>
         <tag>java</tag>
+        <tag>java基础</tag>
         <tag>静态</tag>
         <tag>语法</tag>
       </tags>
@@ -182,8 +195,8 @@
         <category>算法与数据结构</category>
       </categories>
       <tags>
-        <tag>算法</tag>
         <tag>数据结构</tag>
+        <tag>算法</tag>
         <tag>笔试</tag>
       </tags>
   </entry>
@@ -195,8 +208,8 @@
         <category>算法与数据结构</category>
       </categories>
       <tags>
-        <tag>算法</tag>
         <tag>数据结构</tag>
+        <tag>算法</tag>
         <tag>笔试</tag>
       </tags>
   </entry>
@@ -208,8 +221,8 @@
         <category>算法与数据结构</category>
       </categories>
       <tags>
-        <tag>算法</tag>
         <tag>数据结构</tag>
+        <tag>算法</tag>
         <tag>笔试</tag>
       </tags>
   </entry>

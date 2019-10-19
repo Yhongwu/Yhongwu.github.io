@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="jdk,踩过的坑,maven,">
+  <meta name="keywords" content="java,redis,数据结构,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="问题maven项目pom中引用memcached的依赖包 12345&amp;lt;dependency&amp;gt;	&amp;lt;groupId&amp;gt;com.danga&amp;lt;/groupId&amp;gt;	&amp;lt;artifactId&amp;gt;memcached&amp;lt;/artifactId&amp;gt;	&amp;lt;version&amp;gt;2.6.6&amp;lt;/version&amp;gt;&amp;lt;/dependency&amp;gt; 发现并">
-<meta name="keywords" content="jdk,踩过的坑,maven">
+<meta name="description" content="redis的数据类型redis支持5种数据类型(对象)。分别是字符串(String)、列表(list)、哈希(hash)、集合(set)、有序集合(zset/sorted set)。redis中的键和值都是一个对象。redis使用引用计数实现内存回收，当一个对象不再被使用时，会被回收。每个对象也会记录最后一次被访问的时间，可用于计数空转时间(回收算法为lru时有用) 字符串String 字符串对象">
+<meta name="keywords" content="java,redis,数据结构">
 <meta property="og:type" content="article">
-<meta property="og:title" content="maven项目中手动安装jar包到自己本地仓库">
-<meta property="og:url" content="http://yoursite.com/2016/05/26/maven项目中手动安装jar包到自己本地仓库/index.html">
+<meta property="og:title" content="redis的数据类型">
+<meta property="og:url" content="http://yoursite.com/2019/10/19/redis的数据类型/index.html">
 <meta property="og:site_name" content="howard Yao">
-<meta property="og:description" content="问题maven项目pom中引用memcached的依赖包 12345&amp;lt;dependency&amp;gt;	&amp;lt;groupId&amp;gt;com.danga&amp;lt;/groupId&amp;gt;	&amp;lt;artifactId&amp;gt;memcached&amp;lt;/artifactId&amp;gt;	&amp;lt;version&amp;gt;2.6.6&amp;lt;/version&amp;gt;&amp;lt;/dependency&amp;gt; 发现并">
+<meta property="og:description" content="redis的数据类型redis支持5种数据类型(对象)。分别是字符串(String)、列表(list)、哈希(hash)、集合(set)、有序集合(zset/sorted set)。redis中的键和值都是一个对象。redis使用引用计数实现内存回收，当一个对象不再被使用时，会被回收。每个对象也会记录最后一次被访问的时间，可用于计数空转时间(回收算法为lru时有用) 字符串String 字符串对象">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-05-04T07:47:02.945Z">
+<meta property="og:updated_time" content="2019-10-19T11:25:38.758Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="maven项目中手动安装jar包到自己本地仓库">
-<meta name="twitter:description" content="问题maven项目pom中引用memcached的依赖包 12345&amp;lt;dependency&amp;gt;	&amp;lt;groupId&amp;gt;com.danga&amp;lt;/groupId&amp;gt;	&amp;lt;artifactId&amp;gt;memcached&amp;lt;/artifactId&amp;gt;	&amp;lt;version&amp;gt;2.6.6&amp;lt;/version&amp;gt;&amp;lt;/dependency&amp;gt; 发现并">
+<meta name="twitter:title" content="redis的数据类型">
+<meta name="twitter:description" content="redis的数据类型redis支持5种数据类型(对象)。分别是字符串(String)、列表(list)、哈希(hash)、集合(set)、有序集合(zset/sorted set)。redis中的键和值都是一个对象。redis使用引用计数实现内存回收，当一个对象不再被使用时，会被回收。每个对象也会记录最后一次被访问的时间，可用于计数空转时间(回收算法为lru时有用) 字符串String 字符串对象">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/05/26/maven项目中手动安装jar包到自己本地仓库/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/19/redis的数据类型/">
 
 
 
 
 
-  <title>maven项目中手动安装jar包到自己本地仓库 | howard Yao</title>
+  <title>redis的数据类型 | howard Yao</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/26/maven项目中手动安装jar包到自己本地仓库/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/19/redis的数据类型/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="howard Yao">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">maven项目中手动安装jar包到自己本地仓库</h1>
+          <h1 class="post-title" itemprop="name headline">redis的数据类型</h1>
         
 
         <div class="post-meta">
@@ -314,8 +314,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-26T13:08:04+08:00">
-                2016-05-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-19T16:50:57+08:00">
+                2019-10-19
               </time>
             
 
@@ -337,8 +337,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/踩过的坑/" itemprop="url" rel="index">
-                    <span itemprop="name">踩过的坑</span>
+                  <a href="/categories/redis/" itemprop="url" rel="index">
+                    <span itemprop="name">redis</span>
                   </a>
                 </span>
 
@@ -355,8 +355,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2016/05/26/maven项目中手动安装jar包到自己本地仓库/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2016/05/26/maven项目中手动安装jar包到自己本地仓库/" itemprop="commentCount"></span>
+                <a href="/2019/10/19/redis的数据类型/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/10/19/redis的数据类型/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -364,7 +364,7 @@
 
           
           
-             <span id="/2016/05/26/maven项目中手动安装jar包到自己本地仓库/" class="leancloud_visitors" data-flag-title="maven项目中手动安装jar包到自己本地仓库">
+             <span id="/2019/10/19/redis的数据类型/" class="leancloud_visitors" data-flag-title="redis的数据类型">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -395,18 +395,81 @@
       
 
       
-        <h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>maven项目pom中引用memcached的依赖包</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;com.danga&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;memcached&lt;/artifactId&gt;</span><br><span class="line">	&lt;version&gt;2.6.6&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-<p>发现并没有成功下载jar包</p>
-<p>弄了好久，查看网上资料结果是:</p>
-<p>由于目前java memcached client没有官方的maven repository可供使用，因此使用时需要手动将其安装到本地repository。</p>
-<h3 id="安装jar到本地仓库"><a href="#安装jar到本地仓库" class="headerlink" title="安装jar到本地仓库"></a>安装jar到本地仓库</h3><p>这里以memcached为例。其它jar安装方式类似。</p>
-<p>先去官网或者其它网站下载需要的jar包，放在某目录下。这里假设为E:/a/java_memcached-release_2.6.6.jar</p>
-<p>打开cmd输入：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn install:install-file -Dfile=e:/a/java_memcached-release_2.6.6.jar -DgroupId=com.danga -DartifactId=memcached -Dversion=2.6.6 -Dpackaging=jar -DgeneratePom=true</span><br></pre></td></tr></table></figure>
-<p>显示安装成功，就可以成功在eclipse用上面的pom语句来引入memcached的jar包</p>
-<p>-DgroupId=com.danga -DartifactId=memcached -Dversion=2.6.6 -Dpackaging=jar -DgeneratePom=true<br>上面这行表示为安装的jar包设置一个pom坐标<br>之后我们在eclipse的项目里pom引用这个jar包要遵循这个坐标</p>
-<p>其他jar包安装方法类似</p>
+        <h3 id="redis的数据类型"><a href="#redis的数据类型" class="headerlink" title="redis的数据类型"></a>redis的数据类型</h3><p>redis支持5种数据类型(对象)。分别是字符串(String)、列表(list)、哈希(hash)、集合(set)、有序集合(zset/sorted set)。<br>redis中的键和值都是一个对象。<br>redis使用引用计数实现内存回收，当一个对象不再被使用时，会被回收。<br>每个对象也会记录最后一次被访问的时间，可用于计数空转时间(回收算法为lru时有用)</p>
+<h3 id="字符串String"><a href="#字符串String" class="headerlink" title="字符串String"></a>字符串String</h3><ul>
+<li>字符串对象的编码可以是int、raw、embstr。当保存的是整型，则是int，不大于某个阈值(不同版本阈值可能不一样)的字符串，则为embstr，其余大字符串则是raw，raw本质上是SDS(简单动态字符串)。</li>
+<li>字符串对象是二进制安全的，因为其使用的是len来记录长度，和c语言不同，所以可以存放图片等二进制数据。</li>
+<li>redis会共享值为0-9999的字符串对象。</li>
+<li>可通过OBJECT ENCODING key来查看编码。其它类型也一样。</li>
+<li>常见命令：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 设置指定 key 的值</span></span><br><span class="line">SET key value</span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取指定 key 的值</span></span><br><span class="line">GET key </span><br><span class="line"><span class="meta">#</span><span class="bash"> 返回 key 中字符串值的子字符</span></span><br><span class="line">GETRANGE key start end</span><br><span class="line"><span class="meta">#</span><span class="bash"> 将给定 key 的值设为 value ，并返回 key 的旧值</span></span><br><span class="line">GETSET key value</span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置指定key的值和过期时间。单位秒</span></span><br><span class="line">SETEX key seconds value</span><br><span class="line"><span class="meta">#</span><span class="bash"> 只有在 key 不存在时设置 key 的值</span></span><br><span class="line">SETNX key value</span><br><span class="line"><span class="meta">#</span><span class="bash"> 返回key所储存的字符串值的长度</span></span><br><span class="line">STRLEN key</span><br><span class="line"><span class="meta">#</span><span class="bash"> key值+1</span></span><br><span class="line">INCR key</span><br><span class="line"><span class="meta">#</span><span class="bash"> key值增加increment</span></span><br><span class="line">INCRBY key increment</span><br><span class="line"><span class="meta">#</span><span class="bash"> key值增加increment 浮点类型</span></span><br><span class="line">INCRBYFLOAT key increment</span><br><span class="line"><span class="meta">#</span><span class="bash"> key值-1</span></span><br><span class="line">DECR key</span><br><span class="line"><span class="meta">#</span><span class="bash"> key值减少increment</span></span><br><span class="line">DECRBY key decrement</span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定key追加value</span></span><br><span class="line">APPEND key value</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="列表list"><a href="#列表list" class="headerlink" title="列表list"></a>列表list</h3><ul>
+<li>列表对象的编码可以是ziplist或linkedList。</li>
+<li>ziplist使用压缩列表实现，linkedList使用双端链表实现。</li>
+<li>长度和元素个数满足条件(不超过，不同redis版本不一样)才会使用ziplist，超过则使用linkedlist</li>
+<li>linkedlist编码的列表对象底层还有使用string对象。字符串对象是redis的5种对象中唯一一种会被其它四种对象嵌套的对象。</li>
+<li>常见命令<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 将一个或多个值插入到列表头部</span></span><br><span class="line">LPUSH key value1 [value2]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 在列表尾部中添加一个或多个值</span></span><br><span class="line">RPUSH key value1 [value2]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 列表长度</span></span><br><span class="line">LLEN key</span><br><span class="line"><span class="meta">#</span><span class="bash"> 移出并获取列表的第一个元素</span></span><br><span class="line">LPOP key</span><br><span class="line"><span class="meta">#</span><span class="bash"> 移除列表元素</span></span><br><span class="line">LREM key count value</span><br><span class="line"><span class="meta">#</span><span class="bash"> 移除列表的最后一个元素，返回值为移除的元素</span></span><br><span class="line">RPOP key</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="哈希Hash"><a href="#哈希Hash" class="headerlink" title="哈希Hash"></a>哈希Hash</h3><ul>
+<li>哈希对象的编码可以是ziplist或hashtable</li>
+<li>ziplist使用压缩列表实现(键值依次压入列表尾)，hashtable使用字符串实现，键和值都是一个字符串对象</li>
+<li>长度和元素个数满足条件(不超过，不同redis版本不一样)才会使用ziplist，超过则转换为hashtable</li>
+<li>常见命令：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 删除哈希表中指定字段的值</span></span><br><span class="line">HDEL key field1 [field2]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取哈希表中指定字段的值</span></span><br><span class="line">HGET key field</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看哈希表 key 中，指定的字段是否存在</span></span><br><span class="line">HEXISTS key field</span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取哈希表key的所有字段和值</span></span><br><span class="line">HGETALL key</span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取所有哈希表中的字段</span></span><br><span class="line">HKEYS key</span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取哈希表中字段的数量</span></span><br><span class="line">HLEN key+</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="集合set"><a href="#集合set" class="headerlink" title="集合set"></a>集合set</h3><ul>
+<li>集合对象的编码可以是intset或hashtable</li>
+<li>intset使用整数集合实现，有序。hashtable使用字典实现，字典的值都设为null</li>
+<li>长度和元素个数满足条件(不超过，不同redis版本不一样)，并且保存的值不包含字符串时才会使用intset，否则转换为hashtable。</li>
+<li>常见命令：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 向集合key添加一个或多个成员</span></span><br><span class="line">SADD key member1 [member2]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取集合的成员数</span></span><br><span class="line">SCARD key</span><br><span class="line"><span class="meta">#</span><span class="bash"> 返回给定所有集合的差集</span></span><br><span class="line">SDIFF key1 [key2]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 判断 member 元素是否是集合 key 的成员</span></span><br><span class="line">SISMEMBER key member</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="有序集合sorted-set"><a href="#有序集合sorted-set" class="headerlink" title="有序集合sorted set"></a>有序集合sorted set</h3><ul>
+<li>有序,不允许重复</li>
+<li>有序集合对象的编码可以是ziplist或skiplist</li>
+<li>ziplist使用压缩列表作为底层实现，每个集合元素使用2个紧挨的压缩节点保存，一个保存元素，一个保存元素的分值(score)。压缩列表内的元素按分值从小到大排序。</li>
+<li>skiplist编码使用zset结构作为底层实现，zset结构包含一个字典和一个跳跃表。字典dict保存了元素的成员到分值的映射，键是成员，字典的值则是元素对应的分值，利用字典可以用O(1)的时间复杂度找到给定成员的分值。跳表则按分值从小到大保存了集合的成员，通过跳表可以进行范围查找。</li>
+<li>为什么同时使用跳表和字典？因为跳表不适合根据成员找到分值，时间复杂度O(logN)，而字典是无序的，每次范围查找都要额外排序O(NlogN)时间复杂度和O(N)空间复杂度。</li>
+<li>字典和跳表通过指针来共享元素的成员和分值。不会存储重复的成员和分值。</li>
+<li>长度和元素个数满足条件(不超过，不同redis版本不一样)才会使用ziplist，超过则使用skiplist。</li>
+<li>常见命令：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 向有序集合添加一个或多个成员，或者更新已存在成员的分数</span></span><br><span class="line">ZADD key score1 member1 [score2 member2]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取有序集合的成员数</span></span><br><span class="line">ZCARD key</span><br><span class="line"><span class="meta">#</span><span class="bash"> 计算在有序集合中指定区间分数的成员数</span></span><br><span class="line">ZCOUNT key min max</span><br><span class="line"><span class="meta">#</span><span class="bash"> 有序集合中对指定成员的分数加上增量 increment</span></span><br><span class="line">ZINCRBY key increment member</span><br><span class="line"><span class="meta">#</span><span class="bash"> 返回有序集合中指定成员的索引</span></span><br><span class="line">ZRANK key member</span><br><span class="line"><span class="meta">#</span><span class="bash"> 返回有序集中，成员的分数值</span></span><br><span class="line">ZSCORE key member</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>对于上面5中对象可能用到的编码总结如下：</p>
+<table>
+<thead>
+<tr>
+<th>对象类型</th>
+<th>编码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>字符串</td>
+<td>int、raw、embstr</td>
+</tr>
+<tr>
+<td>列表</td>
+<td>ziplist、linkedlist</td>
+</tr>
+<tr>
+<td>哈希</td>
+<td>ziplist、hashtable</td>
+</tr>
+<tr>
+<td>集合</td>
+<td>intset、hashtable</td>
+</tr>
+<tr>
+<td>有序集合</td>
+<td>ziplist、skiplist</td>
+</tr>
+</tbody>
+</table>
+<p>对于各自编码所对应的数据结构，会在后面有空的时候另行总结。</p>
+<p>本文总结自《redis设计与实现》</p>
 
       
     </div>
@@ -424,11 +487,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/jdk/" rel="tag"><i class="fa fa-tag"></i> jdk</a>
+            <a href="/tags/java/" rel="tag"><i class="fa fa-tag"></i> java</a>
           
-            <a href="/tags/踩过的坑/" rel="tag"><i class="fa fa-tag"></i> 踩过的坑</a>
+            <a href="/tags/redis/" rel="tag"><i class="fa fa-tag"></i> redis</a>
           
-            <a href="/tags/maven/" rel="tag"><i class="fa fa-tag"></i> maven</a>
+            <a href="/tags/数据结构/" rel="tag"><i class="fa fa-tag"></i> 数据结构</a>
           
         </div>
       
@@ -456,8 +519,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/22/centos6-5安装tomcat8步骤/" rel="next" title="centos6.5安装tomcat8步骤">
-                <i class="fa fa-chevron-left"></i> centos6.5安装tomcat8步骤
+              <a href="/2019/05/19/浅谈LinkedHashMap/" rel="next" title="浅谈LinkedHashMap">
+                <i class="fa fa-chevron-left"></i> 浅谈LinkedHashMap
               </a>
             
           </div>
@@ -465,10 +528,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/31/数字翻转/" rel="prev" title="数字翻转">
-                数字翻转 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -605,7 +664,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装jar到本地仓库"><span class="nav-number">2.</span> <span class="nav-text">安装jar到本地仓库</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#redis的数据类型"><span class="nav-number">1.</span> <span class="nav-text">redis的数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串String"><span class="nav-number">2.</span> <span class="nav-text">字符串String</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列表list"><span class="nav-number">3.</span> <span class="nav-text">列表list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哈希Hash"><span class="nav-number">4.</span> <span class="nav-text">哈希Hash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合set"><span class="nav-number">5.</span> <span class="nav-text">集合set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有序集合sorted-set"><span class="nav-number">6.</span> <span class="nav-text">有序集合sorted set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小结"><span class="nav-number">7.</span> <span class="nav-text">小结</span></a></li></ol></div>
             
 
           </div>
