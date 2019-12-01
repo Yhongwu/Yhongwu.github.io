@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="java,redis,数据结构,内存回收,回收策略,">
 
 
 
@@ -79,17 +79,18 @@
 
 
 
-<meta name="description" content="居安思危">
-<meta name="keywords" content="howard Yao">
-<meta property="og:type" content="website">
-<meta property="og:title" content="howard Yao">
-<meta property="og:url" content="http://yoursite.com/tags/数据结构/index.html">
+<meta name="description" content="内存回收redis中的每个对象都由一个redisObject表示，redisObject的type属性和ptr属性才是指向底层实现数据结构的指针。在redisObject中还维护了一个refcount属性用于引用计数，当对象被创建时，引用计数初始化为1，当对象被新程序使用时refcount+1,当不再被某个程序使用时，refcount-1，当该值为0时，对象所占用的内存就会被回收。引用计数除了用于">
+<meta name="keywords" content="java,redis,数据结构,内存回收,回收策略">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis内存回收机制">
+<meta property="og:url" content="http://yoursite.com/2019/12/01/redis内存回收机制/index.html">
 <meta property="og:site_name" content="howard Yao">
-<meta property="og:description" content="居安思危">
+<meta property="og:description" content="内存回收redis中的每个对象都由一个redisObject表示，redisObject的type属性和ptr属性才是指向底层实现数据结构的指针。在redisObject中还维护了一个refcount属性用于引用计数，当对象被创建时，引用计数初始化为1，当对象被新程序使用时refcount+1,当不再被某个程序使用时，refcount-1，当该值为0时，对象所占用的内存就会被回收。引用计数除了用于">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-01T09:45:20.344Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="howard Yao">
-<meta name="twitter:description" content="居安思危">
+<meta name="twitter:title" content="redis内存回收机制">
+<meta name="twitter:description" content="内存回收redis中的每个对象都由一个redisObject表示，redisObject的type属性和ptr属性才是指向底层实现数据结构的指针。在redisObject中还维护了一个refcount属性用于引用计数，当对象被创建时，引用计数初始化为1，当对象被新程序使用时refcount+1,当不再被某个程序使用时，refcount-1，当该值为0时，对象所占用的内存就会被回收。引用计数除了用于">
 
 
 
@@ -119,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/数据结构/">
+  <link rel="canonical" href="http://yoursite.com/2019/12/01/redis内存回收机制/">
 
 
 
 
 
-  <title>标签: 数据结构 | howard Yao</title>
+  <title>redis内存回收机制 | howard Yao</title>
   
 
 
@@ -144,7 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -270,208 +271,251 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block tag">
-
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>数据结构<small>标签</small>
-        </h1>
-      </div>
-
-      
-        
 
   <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/01/redis内存回收机制/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="howard Yao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/zymx14.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="howard Yao">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2019/12/01/redis内存回收机制/" itemprop="url">
-              
-                <span itemprop="name">redis内存回收机制</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">redis内存回收机制</h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-12-01T17:40:14+08:00" content="2019-12-01">
-          12-01
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-01T17:40:14+08:00">
+                2019-12-01
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/redis/" itemprop="url" rel="index">
+                    <span itemprop="name">redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/12/01/redis内存回收机制/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/12/01/redis内存回收机制/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2019/12/01/redis内存回收机制/" class="leancloud_visitors" data-flag-title="redis内存回收机制">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2019/10/19/redis的数据类型/" itemprop="url">
-              
-                <span itemprop="name">redis的数据类型</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2019-10-19T16:50:57+08:00" content="2019-10-19">
-          10-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
 
       
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/31/优雅的点/" itemprop="url">
-              
-                <span itemprop="name">优雅的点</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-08-31T21:07:49+08:00" content="2018-08-31">
-          08-31
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/09/22/哈夫曼树与哈夫曼编码/" itemprop="url">
-              
-                <span itemprop="name">哈夫曼树与哈夫曼编码</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-09-22T22:15:47+08:00" content="2017-09-22">
-          09-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/08/31/最大奇约数/" itemprop="url">
-              
-                <span itemprop="name">最大奇约数</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-08-31T22:05:48+08:00" content="2017-08-31">
-          08-31
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/08/31/交错01串/" itemprop="url">
-              
-                <span itemprop="name">交错01串</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-08-31T21:26:32+08:00" content="2017-08-31">
-          08-31
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/08/31/数字翻转/" itemprop="url">
-              
-                <span itemprop="name">数字翻转</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-08-31T21:11:05+08:00" content="2017-08-31">
-          08-31
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+        <h3 id="内存回收"><a href="#内存回收" class="headerlink" title="内存回收"></a>内存回收</h3><p>redis中的每个对象都由一个redisObject表示，redisObject的type属性和ptr属性才是指向底层实现数据结构的指针。在redisObject中还维护了一个refcount属性用于引用计数，当对象被创建时，引用计数初始化为1，当对象被新程序使用时refcount+1,当不再被某个程序使用时，refcount-1，当该值为0时，对象所占用的内存就会被回收。<br>引用计数除了用于内存会说外，还用于对象共享。比如key a的值为10，key b的值也为10，那么为了节省内存，redis会将数据库键的值指向同一个字符串对象，被共享的值对象的引用计数+1。前面说的有序集合的skiplist实现字典和跳表共享对象也是通过这种方式实现，实际上redis默认会初始化0-9999的字符串用于共享。</p>
+<h3 id="过期键删除策略"><a href="#过期键删除策略" class="headerlink" title="过期键删除策略"></a>过期键删除策略</h3><p>过期删除主要有两种策略：定时删除，惰性删除和定期删除。<br>定时删除：定时删除，对内存友好，但如果键很多，消耗cpu。<br>惰性删除：使用时检测到过期再删除，对cpu友好，但是如果过期键很多，占用太多内存。<br>定期删除：中合前两种，隔一段时间删除过期键，并限制删除操作的频率和时长。但如果控制不好，则可能退化为定时删除或惰性删除。<br>redos对于过期键的删除策略主要采用<strong>惰性删除和定期删除结合</strong>，每次执行redis命令前都会调用expireIfNeeded函数对键进行检查，如果过期则删除该键。定期操作通过activeExpireCycle函数实现，分多次再规定时间内遍历redis数据库，随机检查部分键，删除过期键。每个库默认检查20个键。实际上这个过程还分慢模式和快模式，慢模式下超时时间为25毫秒，如果超时，则会再次以快模式回收过期键，快模式下超时时间1毫秒且2s内只能执行一次。</p>
+<h3 id="内存回收策略"><a href="#内存回收策略" class="headerlink" title="内存回收策略"></a>内存回收策略</h3><p>redis的内存回收机制主要是对于过期键的删除策略，以及对于内存使用达到上限时的内存回收策略。<br>redis通过配置maxmemory来控制最大可用内存，通过<code>info memory</code>可用查看redis内存信息。这里列出几个主要配置：<br><figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">used_memory：由 Redis 分配器分配的内存总量，包含了redis进程内部的开销和数据占用的内存,单位字节</span><br><span class="line">used_memory_human：用更直观的方式显示内存总量</span><br><span class="line">used_memory_rss：向操作系统申请的内存大小。与 <span class="built_in">top</span>、ps命令的输出一致。</span><br><span class="line">maxmemory：Redis实例的最大内存配置</span><br><span class="line">maxmemory_policy：当达到maxmemory时的淘汰策略</span><br><span class="line">mem_fragmentation_ratio：碎片率，used_memory_rss/ used_memory</span><br></pre></td></tr></table></figure></p>
+<p>实际上由于内存碎片，redis达到最大内存的往往是超过maxmemory的。<br>32位的redis没记错的话最大只能配置3g。<br>redis的内存回收策略主要有以下6种：</p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>详情</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>noeviction</td>
+<td>默认策略，禁止淘汰，内存不足的时候只能读不能写，写会返回错误</td>
+</tr>
+<tr>
+<td>volatile-lru</td>
+<td>对超时的键值对采用最近最少使用的淘汰策略(lru)回收</td>
+</tr>
+<tr>
+<td>allkeys-lru</td>
+<td>对所有键值对采用最近最少使用的淘汰策略(lru)回收</td>
+</tr>
+<tr>
+<td>volatile-random</td>
+<td>对超时的键值对采用随机淘汰策略回收</td>
+</tr>
+<tr>
+<td>allkeys-random</td>
+<td>对所有键值对采用随机淘汰策略回收</td>
+</tr>
+<tr>
+<td>volatile-ttl</td>
+<td>采用删除存活时间最短的键值对策略</td>
+</tr>
+</tbody>
+</table>
+<p>这里提以下LRU，即Least Recently Used 近期最少使用算法，很多缓存策略都使用了这种策略进行空间的释放。<br>Redis 在默认情况下会采用 noeviction 策略，通过<strong>maxmemory_policy</strong>参数配置。<br>实际上对于上面提到的LRU或TTL算法，redis并不是很精确的实现，为什么呢，因为redis中可能有很多的键值对，redis不可能每次都对比全部的键值对来确定删除哪个键值对，这样会消耗cpu且更耗时，所以redis通过<br><strong>maxmemory-samples</strong>参数来控制，该参数默认5，该参数配置选取固定数目的key作为样本进行比较，然后按照淘汰策略回收。maxmemory-samples越大，则lru算法更接近严格上的lru算法，精确度更高，但是开销也变大了。查找资料得知，redis作者经过测试，该值配置为10已经很接近真正的lru了。</p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"><i class="fa fa-tag"></i> java</a>
+          
+            <a href="/tags/redis/" rel="tag"><i class="fa fa-tag"></i> redis</a>
+          
+            <a href="/tags/数据结构/" rel="tag"><i class="fa fa-tag"></i> 数据结构</a>
+          
+            <a href="/tags/内存回收/" rel="tag"><i class="fa fa-tag"></i> 内存回收</a>
+          
+            <a href="/tags/回收策略/" rel="tag"><i class="fa fa-tag"></i> 回收策略</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/19/redis的数据类型/" rel="next" title="redis的数据类型">
+                <i class="fa fa-chevron-left"></i> redis的数据类型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -479,6 +523,13 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
 
         </div>
         
@@ -499,8 +550,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -562,6 +622,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#内存回收"><span class="nav-number">1.</span> <span class="nav-text">内存回收</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#过期键删除策略"><span class="nav-number">2.</span> <span class="nav-text">过期键删除策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存回收策略"><span class="nav-number">3.</span> <span class="nav-text">内存回收策略</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -717,6 +793,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

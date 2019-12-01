@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[redis内存回收机制]]></title>
+    <url>%2F2019%2F12%2F01%2Fredis%E5%86%85%E5%AD%98%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6%2F</url>
+    <content type="text"><![CDATA[内存回收redis中的每个对象都由一个redisObject表示，redisObject的type属性和ptr属性才是指向底层实现数据结构的指针。在redisObject中还维护了一个refcount属性用于引用计数，当对象被创建时，引用计数初始化为1，当对象被新程序使用时refcount+1,当不再被某个程序使用时，refcount-1，当该值为0时，对象所占用的内存就会被回收。引用计数除了用于内存会说外，还用于对象共享。比如key a的值为10，key b的值也为10，那么为了节省内存，redis会将数据库键的值指向同一个字符串对象，被共享的值对象的引用计数+1。前面说的有序集合的skiplist实现字典和跳表共享对象也是通过这种方式实现，实际上redis默认会初始化0-9999的字符串用于共享。 过期键删除策略过期删除主要有两种策略：定时删除，惰性删除和定期删除。定时删除：定时删除，对内存友好，但如果键很多，消耗cpu。惰性删除：使用时检测到过期再删除，对cpu友好，但是如果过期键很多，占用太多内存。定期删除：中合前两种，隔一段时间删除过期键，并限制删除操作的频率和时长。但如果控制不好，则可能退化为定时删除或惰性删除。redos对于过期键的删除策略主要采用惰性删除和定期删除结合，每次执行redis命令前都会调用expireIfNeeded函数对键进行检查，如果过期则删除该键。定期操作通过activeExpireCycle函数实现，分多次再规定时间内遍历redis数据库，随机检查部分键，删除过期键。每个库默认检查20个键。实际上这个过程还分慢模式和快模式，慢模式下超时时间为25毫秒，如果超时，则会再次以快模式回收过期键，快模式下超时时间1毫秒且2s内只能执行一次。 内存回收策略redis的内存回收机制主要是对于过期键的删除策略，以及对于内存使用达到上限时的内存回收策略。redis通过配置maxmemory来控制最大可用内存，通过info memory可用查看redis内存信息。这里列出几个主要配置：123456used_memory：由 Redis 分配器分配的内存总量，包含了redis进程内部的开销和数据占用的内存,单位字节used_memory_human：用更直观的方式显示内存总量used_memory_rss：向操作系统申请的内存大小。与 top、ps命令的输出一致。maxmemory：Redis实例的最大内存配置maxmemory_policy：当达到maxmemory时的淘汰策略mem_fragmentation_ratio：碎片率，used_memory_rss/ used_memory 实际上由于内存碎片，redis达到最大内存的往往是超过maxmemory的。32位的redis没记错的话最大只能配置3g。redis的内存回收策略主要有以下6种： 策略 详情 noeviction 默认策略，禁止淘汰，内存不足的时候只能读不能写，写会返回错误 volatile-lru 对超时的键值对采用最近最少使用的淘汰策略(lru)回收 allkeys-lru 对所有键值对采用最近最少使用的淘汰策略(lru)回收 volatile-random 对超时的键值对采用随机淘汰策略回收 allkeys-random 对所有键值对采用随机淘汰策略回收 volatile-ttl 采用删除存活时间最短的键值对策略 这里提以下LRU，即Least Recently Used 近期最少使用算法，很多缓存策略都使用了这种策略进行空间的释放。Redis 在默认情况下会采用 noeviction 策略，通过maxmemory_policy参数配置。实际上对于上面提到的LRU或TTL算法，redis并不是很精确的实现，为什么呢，因为redis中可能有很多的键值对，redis不可能每次都对比全部的键值对来确定删除哪个键值对，这样会消耗cpu且更耗时，所以redis通过maxmemory-samples参数来控制，该参数默认5，该参数配置选取固定数目的key作为样本进行比较，然后按照淘汰策略回收。maxmemory-samples越大，则lru算法更接近严格上的lru算法，精确度更高，但是开销也变大了。查找资料得知，redis作者经过测试，该值配置为10已经很接近真正的lru了。]]></content>
+      <categories>
+        <category>redis</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>redis</tag>
+        <tag>数据结构</tag>
+        <tag>内存回收</tag>
+        <tag>回收策略</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[redis的数据类型]]></title>
     <url>%2F2019%2F10%2F19%2Fredis%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%2F</url>
     <content type="text"><![CDATA[redis的数据类型redis支持5种数据类型(对象)。分别是字符串(String)、列表(list)、哈希(hash)、集合(set)、有序集合(zset/sorted set)。redis中的键和值都是一个对象。redis使用引用计数实现内存回收，当一个对象不再被使用时，会被回收。每个对象也会记录最后一次被访问的时间，可用于计数空转时间(回收算法为lru时有用) 字符串String 字符串对象的编码可以是int、raw、embstr。当保存的是整型，则是int，不大于某个阈值(不同版本阈值可能不一样)的字符串，则为embstr，其余大字符串则是raw，raw本质上是SDS(简单动态字符串)。 字符串对象是二进制安全的，因为其使用的是len来记录长度，和c语言不同，所以可以存放图片等二进制数据。 redis会共享值为0-9999的字符串对象。 可通过OBJECT ENCODING key来查看编码。其它类型也一样。 常见命令：1234567891011121314151617181920212223242526# 设置指定 key 的值SET key value# 获取指定 key 的值GET key # 返回 key 中字符串值的子字符GETRANGE key start end# 将给定 key 的值设为 value ，并返回 key 的旧值GETSET key value# 设置指定key的值和过期时间。单位秒SETEX key seconds value# 只有在 key 不存在时设置 key 的值SETNX key value# 返回key所储存的字符串值的长度STRLEN key# key值+1INCR key# key值增加incrementINCRBY key increment# key值增加increment 浮点类型INCRBYFLOAT key increment# key值-1DECR key# key值减少incrementDECRBY key decrement# 指定key追加valueAPPEND key value 列表list 列表对象的编码可以是ziplist或linkedList。 ziplist使用压缩列表实现，linkedList使用双端链表实现。 长度和元素个数满足条件(不超过，不同redis版本不一样)才会使用ziplist，超过则使用linkedlist linkedlist编码的列表对象底层还有使用string对象。字符串对象是redis的5种对象中唯一一种会被其它四种对象嵌套的对象。 常见命令123456789101112# 将一个或多个值插入到列表头部LPUSH key value1 [value2]# 在列表尾部中添加一个或多个值RPUSH key value1 [value2]# 列表长度LLEN key# 移出并获取列表的第一个元素LPOP key# 移除列表元素LREM key count value# 移除列表的最后一个元素，返回值为移除的元素RPOP key 哈希Hash 哈希对象的编码可以是ziplist或hashtable ziplist使用压缩列表实现(键值依次压入列表尾)，hashtable使用字符串实现，键和值都是一个字符串对象 长度和元素个数满足条件(不超过，不同redis版本不一样)才会使用ziplist，超过则转换为hashtable 常见命令：123456789101112# 删除哈希表中指定字段的值HDEL key field1 [field2]# 获取哈希表中指定字段的值HGET key field# 查看哈希表 key 中，指定的字段是否存在HEXISTS key field# 获取哈希表key的所有字段和值HGETALL key# 获取所有哈希表中的字段HKEYS key# 获取哈希表中字段的数量HLEN key+ 集合set 集合对象的编码可以是intset或hashtable intset使用整数集合实现，有序。hashtable使用字典实现，字典的值都设为null 长度和元素个数满足条件(不超过，不同redis版本不一样)，并且保存的值不包含字符串时才会使用intset，否则转换为hashtable。 常见命令：12345678# 向集合key添加一个或多个成员SADD key member1 [member2]# 获取集合的成员数SCARD key# 返回给定所有集合的差集SDIFF key1 [key2]# 判断 member 元素是否是集合 key 的成员SISMEMBER key member 有序集合sorted set 有序,不允许重复 有序集合对象的编码可以是ziplist或skiplist ziplist使用压缩列表作为底层实现，每个集合元素使用2个紧挨的压缩节点保存，一个保存元素，一个保存元素的分值(score)。压缩列表内的元素按分值从小到大排序。 skiplist编码使用zset结构作为底层实现，zset结构包含一个字典和一个跳跃表。字典dict保存了元素的成员到分值的映射，键是成员，字典的值则是元素对应的分值，利用字典可以用O(1)的时间复杂度找到给定成员的分值。跳表则按分值从小到大保存了集合的成员，通过跳表可以进行范围查找。 为什么同时使用跳表和字典？因为跳表不适合根据成员找到分值，时间复杂度O(logN)，而字典是无序的，每次范围查找都要额外排序O(NlogN)时间复杂度和O(N)空间复杂度。 字典和跳表通过指针来共享元素的成员和分值。不会存储重复的成员和分值。 长度和元素个数满足条件(不超过，不同redis版本不一样)才会使用ziplist，超过则使用skiplist。 常见命令：123456789101112# 向有序集合添加一个或多个成员，或者更新已存在成员的分数ZADD key score1 member1 [score2 member2]# 获取有序集合的成员数ZCARD key# 计算在有序集合中指定区间分数的成员数ZCOUNT key min max# 有序集合中对指定成员的分数加上增量 incrementZINCRBY key increment member# 返回有序集合中指定成员的索引ZRANK key member# 返回有序集中，成员的分数值ZSCORE key member 小结对于上面5中对象可能用到的编码总结如下： 对象类型 编码 字符串 int、raw、embstr 列表 ziplist、linkedlist 哈希 ziplist、hashtable 集合 intset、hashtable 有序集合 ziplist、skiplist 对于各自编码所对应的数据结构，会在后面有空的时候另行总结。 本文总结自《redis设计与实现》]]></content>
@@ -26,8 +41,8 @@
         <category>java基础</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>java基础</tag>
+        <tag>java</tag>
         <tag>扩容</tag>
         <tag>HashMap</tag>
       </tags>
@@ -89,8 +104,8 @@
         <category>java基础</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>java基础</tag>
+        <tag>java</tag>
         <tag>抽象类</tag>
         <tag>接口</tag>
       </tags>
@@ -116,8 +131,8 @@
         <category>java基础</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>java基础</tag>
+        <tag>java</tag>
         <tag>arraylist</tag>
         <tag>扩容</tag>
       </tags>
@@ -130,8 +145,8 @@
         <category>java基础</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>java基础</tag>
+        <tag>java</tag>
         <tag>泛型</tag>
       </tags>
   </entry>
@@ -181,8 +196,8 @@
         <category>java基础</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>java基础</tag>
+        <tag>java</tag>
         <tag>静态</tag>
         <tag>语法</tag>
       </tags>
@@ -248,8 +263,8 @@
       </categories>
       <tags>
         <tag>Linux</tag>
-        <tag>centos</tag>
         <tag>教程</tag>
+        <tag>centos</tag>
         <tag>tomcat</tag>
       </tags>
   </entry>
